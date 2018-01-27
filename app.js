@@ -5,11 +5,16 @@ var logger = require('morgan');
 var cookieParser = require('cookie-parser');
 var bodyParser = require('body-parser');
 var sassMiddleware = require('node-sass-middleware');
+var Raven = require('raven');
+var env = require('dotenv').config();
 
 var index = require('./routes/index');
 var users = require('./routes/users');
 
 var app = express();
+
+Raven.config(process.env.SENTRY_DSN).install();
+app.use(Raven.requestHandler());
 
 // view engine setup
 app.set('views', path.join(__dirname, 'views'));
@@ -39,7 +44,9 @@ app.use(function(req, res, next) {
   next(err);
 });
 
-// error handler
+// error handlers
+app.use(Raven.errorHandler());
+
 app.use(function(err, req, res, next) {
   // set locals, only providing error in development
   res.locals.message = err.message;
@@ -48,6 +55,12 @@ app.use(function(err, req, res, next) {
   // render the error page
   res.status(err.status || 500);
   res.render('error');
+});
+
+app.use(function onError(err, req, res, next) {
+    // The error id is attached to `res.sentry` to be returned
+    // and optionally displayed to the user for support.
+    res.end(res.sentry + '\n');
 });
 
 module.exports = app;
