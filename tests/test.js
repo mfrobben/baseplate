@@ -12,6 +12,12 @@ describe('loading express', function () {
     .expect(200, done);
   });
 
+  it('responds to /users', function testUsers(done){
+    request(app)
+      .get('/users')
+      .expect(200, done);
+  })
+
   it('404s everything else', function testPath(done) {
     request(app)
       .get('/foo/bar')
