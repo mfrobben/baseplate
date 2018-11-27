@@ -4,7 +4,7 @@ var db = require('../database');
 var toJson = require('to-json');
 
 /* GET users listing. */
-router.get('/', function(req, res, next) {
+router.get('/users', function(req, res, next) {
   db.query('SELECT * from `users`', function (error, results, fields) {
 	if (error) throw error;
 	  
