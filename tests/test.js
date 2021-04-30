@@ -1,26 +1,27 @@
+var env = require('dotenv').config();
 var request = require('supertest');
 describe('loading express', function () {
   var app;
 
-  beforeEach(function () {
+  before(async function () {
     app = require('../app.js');
   });
 
-  it('responds to /', function testSlash(done) {
-  request(app)
+  it('responds to /', async function testSlash() {
+    await request(app)
     .get('/')
-    .expect(200, done);
+    .expect(200);
   });
 
-  it('responds to /users', function testUsers(done){
-    request(app)
-      .get('/users')
-      .expect(200, done);
+  it('responds to /users', async function testUsers(){
+    await request(app)
+    .get('/users')
+    .expect(200);
   })
 
-  it('404s everything else', function testPath(done) {
-    request(app)
-      .get('/foo/bar')
-      .expect(404, done);
+  it('404s everything else', async function testPath() {
+    await request(app)
+    .get('/asdf')
+    .expect(404);
   });
 });
